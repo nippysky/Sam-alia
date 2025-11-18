@@ -112,7 +112,7 @@ export default function RootLayout({
       className={`${cinzel.variable} ${poppins.variable}`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-background text-foreground antialiased">
+      <body className="min-h-screen bg-background text-foreground antialiased w-full max-w-[1920px] mx-auto">
         {/* Structured data for SEO */}
         <Script
           id="samalia-org-jsonld"
