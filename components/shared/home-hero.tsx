@@ -14,7 +14,6 @@ export function HomeHero() {
           alt="Sam’Alia – A living design house"
           fill
           priority
-          quality={90}
           className="object-cover"
         />
 

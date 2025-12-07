@@ -4,14 +4,20 @@ import Link from "next/link";
 import {
   Sheet,
   SheetContent,
-  SheetTrigger,
   SheetHeader,
   SheetTitle,
   SheetDescription,
+  SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
 import Image from "next/image";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
+
+type MenuColor = "white" | "dark";
+
+interface MainMenuProps {
+  color?: MenuColor;
+}
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -22,11 +28,16 @@ const navItems = [
   { href: "/about", label: "About" },
 ];
 
-export function MainMenu() {
+export function MainMenu({ color = "dark" }: MainMenuProps) {
+  const iconColor =
+    color === "white" ? "text-white" : "text-neutral-600";
+
   return (
     <Sheet>
       <SheetTrigger asChild className="cursor-pointer">
-        <HiOutlineMenuAlt2 className="h-7 w-7 text-neutral-600" />
+        <HiOutlineMenuAlt2
+          className={`h-7 w-7 transition-colors duration-200 ${iconColor}`}
+        />
       </SheetTrigger>
 
       <SheetContent
@@ -37,16 +48,16 @@ export function MainMenu() {
           {/* Accessible title + visual top bar */}
           <SheetHeader className="border-b border-neutral-200 px-6 py-4 flex flex-row items-center justify-between space-y-0">
             <div className="flex items-center gap-3">
-          <div className="relative h-10 w-10">
-                     <Image
-                       src="/Samalia_Logo.svg"
-                       alt="Sam’Alia"
-                       fill
-                       className="object-contain"
-                       priority
-                       unoptimized
-                     />
-                   </div>
+              <div className="relative h-10 w-10">
+                <Image
+                  src="/Samalia_Logo.svg"
+                  alt="Sam’Alia"
+                  fill
+                  className="object-contain"
+                  priority
+                  unoptimized
+                />
+              </div>
               <span className="text-xs font-medium tracking-[0.18em] text-neutral-600">
                 MENU
               </span>
@@ -70,7 +81,9 @@ export function MainMenu() {
                       className="flex items-center justify-between py-3 uppercase hover:text-neutral-500"
                     >
                       <span>{item.label}</span>
-                      <span className="text-[10px] text-neutral-400">&gt;</span>
+                      <span className="text-[10px] text-neutral-400">
+                        &gt;
+                      </span>
                     </Link>
                   </SheetClose>
                 </li>
