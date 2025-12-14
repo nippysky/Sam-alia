@@ -10,12 +10,18 @@ import { AnimatePresence, motion } from "framer-motion";
 type FeaturedItem = {
   id: number;
   title: string;
-  ctaLabel: string; // used in carousel button
-  href: string; // “View Look” route (optional)
-  image: string; // HERO image (card image)
-  eyebrow?: string; // e.g. "EXPLORE LOOK"
+
+  // carousel
+  ctaLabel: string;
+
+  // viewer modal CTA (EDIT THESE PER LOOK)
+  viewerCtaLabel: string;
+  viewerCtaHref: string;
+
+  image: string;
+  eyebrow?: string;
   description?: string;
-  gallery: string[]; // child images (thumbnails)
+  gallery: string[];
 };
 
 const featuredCollections: FeaturedItem[] = [
@@ -23,34 +29,61 @@ const featuredCollections: FeaturedItem[] = [
     id: 1,
     title: "The Retro Prince",
     ctaLabel: "View look",
-    href: "/collections/retro-prince",
+    viewerCtaLabel: "Commission this look",
+    viewerCtaHref: "/commission/retro-prince",
     image: "/images/F1.png",
     eyebrow: "Explore Look",
     description:
       "A signature Sam’Alia look—crafted with intention, heritage, and modern elegance.",
-    gallery: ["/images/F1.png", "/images/F1-2.png", "/images/F1-3.png", "/images/F1-4.png"],
+    gallery: ["/images/F1.png", "/images/F2.png", "/images/F3.png"],
   },
   {
     id: 2,
     title: "Adire Print Gown",
     ctaLabel: "View look",
-    href: "/collections/adire-print-gown",
+    viewerCtaLabel: "I want this look",
+    viewerCtaHref: "/commission/adire-print-gown",
     image: "/images/F2.png",
     eyebrow: "Explore Look",
     description:
       "A modern silhouette, anchored in craft—adire textures, refined detailing, and presence.",
-    gallery: ["/images/F2.png", "/images/F2-2.png", "/images/F2-3.png"],
+    gallery: ["/images/F2.png", "/images/F1.png", "/images/F3.png"],
   },
   {
     id: 3,
     title: "African Top Shirt",
     ctaLabel: "View look",
-    href: "/collections/african-top-shirt",
+    viewerCtaLabel: "Commission this look",
+    viewerCtaHref: "/commission/african-top-shirt",
     image: "/images/F3.png",
     eyebrow: "Explore Look",
     description:
       "A tailored statement piece—clean structure, elevated fabric language, timeless wearability.",
-    gallery: ["/images/F3.png", "/images/F3-2.png", "/images/F3-3.png"],
+    gallery: ["/images/F3.png", "/images/F2.png", "/images/F1.png"],
+  },
+  {
+    id: 4,
+    title: "Adire Print Gown",
+    ctaLabel: "View look",
+    viewerCtaLabel: "I want this look",
+    viewerCtaHref: "/commission/adire-print-gown",
+    image: "/images/F2.png",
+    eyebrow: "Explore Look",
+    description:
+      "A modern silhouette, anchored in craft—adire textures, refined detailing, and presence.",
+    gallery: ["/images/F2.png", "/images/F1.png", "/images/F3.png"],
+  },
+  {
+    id: 5,
+    title: "African Top Shirt",
+    ctaLabel: "View look",
+    viewerCtaLabel: "Commission this look",
+    viewerCtaHref: "/commission/african-top-shirt",
+    image: "/images/F3.png",
+    eyebrow: "Explore Look",
+    description:
+      "A tailored statement piece—clean structure, elevated fabric language, timeless wearability.",
+    gallery: ["/images/F3.png", "/images/F2.png", "/images/F1.png"],
   },
 ];
 
@@ -87,7 +120,6 @@ function FeaturedCollectionViewer({
 
   useLockBodyScroll(open);
 
-  // ESC closes
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (e: KeyboardEvent) => {
@@ -100,10 +132,6 @@ function FeaturedCollectionViewer({
   const hero = state.activeShot ?? item?.image ?? "";
   const gallery = item?.gallery?.length ? item.gallery : hero ? [hero] : [];
 
-  // prevent Next/Image from looking “soft” on some screens:
-  // 1) give proper sizes
-  // 2) use quality
-  // 3) avoid scaling artifacts
   const HERO_SIZES =
     "(max-width: 768px) 92vw, (max-width: 1024px) 78vw, 1100px";
 
@@ -144,7 +172,7 @@ function FeaturedCollectionViewer({
               "
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Close button (FUNCTIONAL) */}
+              {/* Close button pill (keep this one only) */}
               <button
                 type="button"
                 onClick={onClose}
@@ -159,9 +187,8 @@ function FeaturedCollectionViewer({
                 Close <X className="h-4 w-4" />
               </button>
 
-              {/* Content layout */}
               <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
-                {/* Left: text */}
+                {/* Left */}
                 <div className="relative z-10 px-6 pb-6 pt-16 sm:px-10 sm:pb-10 lg:py-12">
                   <p className="text-[11px] font-medium uppercase tracking-[0.26em] text-white/70">
                     {item.eyebrow ?? "Explore Look"}
@@ -177,10 +204,10 @@ function FeaturedCollectionViewer({
                     </p>
                   )}
 
-                  {/* CTA – not “View”, matches Figma intent */}
+                  {/* ✅ Only one CTA button now */}
                   <div className="mt-8 flex flex-wrap gap-3">
                     <Link
-                      href={item.href}
+                      href={item.viewerCtaHref}
                       className="
                         inline-flex items-center gap-3
                         border border-white bg-white
@@ -188,24 +215,11 @@ function FeaturedCollectionViewer({
                         text-neutral-900 transition hover:bg-transparent hover:text-white
                       "
                     >
-                      View Look <span className="text-xs">→</span>
+                      {item.viewerCtaLabel} <span className="text-xs">→</span>
                     </Link>
-
-                    <button
-                      type="button"
-                      onClick={onClose}
-                      className="
-                        inline-flex items-center gap-3
-                        border border-white/25 bg-transparent
-                        px-5 py-2 text-[11px] font-medium uppercase tracking-[0.22em]
-                        text-white/85 transition hover:bg-white/10 hover:text-white
-                      "
-                    >
-                      Close
-                    </button>
                   </div>
 
-                  {/* Thumbnails (bigger + clearer) */}
+                  {/* Thumbnails */}
                   <div className="mt-10">
                     <div
                       className="
@@ -223,8 +237,6 @@ function FeaturedCollectionViewer({
                             key={src}
                             type="button"
                             onClick={() => {
-                              // no event hacks — direct state update via window event alternative removed
-                              // we’ll dispatch event and listen in parent below (keeps this component pure)
                               const ev = new CustomEvent("samalia:featured-shot", {
                                 detail: { src },
                               });
@@ -234,14 +246,14 @@ function FeaturedCollectionViewer({
                               relative shrink-0 overflow-hidden rounded-lg
                               ${active ? "ring-2 ring-white/90" : "opacity-80 hover:opacity-100"}
                             `}
-                            style={{ width: 64, height: 64 }} // bigger thumbs
+                            style={{ width: 72, height: 72 }}
                             aria-label="Select image"
                           >
                             <Image
                               src={src}
                               alt=""
                               fill
-                              sizes="64px"
+                              sizes="72px"
                               quality={95}
                               className="object-cover"
                             />
@@ -252,7 +264,7 @@ function FeaturedCollectionViewer({
                   </div>
                 </div>
 
-                {/* Right: hero image inside modal (sharp) */}
+                {/* Right: hero */}
                 <div className="relative">
                   <div className="relative aspect-16/11 w-full lg:aspect-auto lg:h-full">
                     <Image
@@ -265,9 +277,8 @@ function FeaturedCollectionViewer({
                       className="object-cover"
                     />
 
-                    {/* Soft cinematic shading */}
                     <div className="absolute inset-0 bg-linear-to-t from-black/55 via-black/10 to-transparent" />
-                    <div className="absolute inset-y-0 left-0 w-24 bg-linear-to-r from-black/55 to-transparent hidden lg:block" />
+                    <div className="absolute inset-y-0 left-0 hidden w-24 bg-linear-to-r from-black/55 to-transparent lg:block" />
                   </div>
                 </div>
               </div>
@@ -284,14 +295,12 @@ export function FeaturedCollectionsSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [maxIndex, setMaxIndex] = useState(0);
 
-  // Viewer modal state
   const [viewer, setViewer] = useState<ViewerState>({
     open: false,
     item: null,
     activeShot: null,
   });
 
-  // Update active hero from thumbnails
   useEffect(() => {
     const handler = (e: Event) => {
       const ce = e as CustomEvent<{ src: string }>;
@@ -308,18 +317,13 @@ export function FeaturedCollectionsSection() {
   }, []);
 
   const openViewer = useCallback((item: FeaturedItem) => {
-    setViewer({
-      open: true,
-      item,
-      activeShot: item.image,
-    });
+    setViewer({ open: true, item, activeShot: item.image });
   }, []);
 
   const closeViewer = useCallback(() => {
     setViewer({ open: false, item: null, activeShot: null });
   }, []);
 
-  // Tailwind gap-8 ≈ 32px
   const CARD_GAP = 32;
 
   const getCardWidth = useCallback(() => {
@@ -379,8 +383,7 @@ export function FeaturedCollectionsSection() {
 
     const raw = trackRef.current.scrollLeft / cardWidth;
     const nearest = Math.round(raw);
-    const clamped = clamp(nearest, 0, maxIndex);
-    setActiveIndex(clamped);
+    setActiveIndex(clamp(nearest, 0, maxIndex));
   }, [getCardWidth, maxIndex]);
 
   useEffect(() => {
@@ -397,7 +400,6 @@ export function FeaturedCollectionsSection() {
     <>
       <section className="w-full bg-white py-20 md:py-24">
         <div className="w-full px-5 sm:px-10 lg:px-20">
-          {/* Heading row */}
           <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
             <h2 className="font-heading text-2xl tracking-[0.18em] text-neutral-900 sm:text-[26px]">
               Featured Collection
@@ -412,31 +414,24 @@ export function FeaturedCollectionsSection() {
             </Link>
           </div>
 
-          {/* Carousel */}
           <div className="mt-10">
             <div className="relative">
               <div
                 ref={trackRef}
                 className="
                   flex gap-8
-                  overflow-x-auto
-                  scroll-smooth
+                  overflow-x-auto scroll-smooth
                   snap-x snap-mandatory
-                  pb-4
-                  no-scrollbar
+                  pb-4 no-scrollbar
                 "
               >
                 {featuredCollections.map((item) => (
                   <article
-                    key={`${item.id}-${item.href}`}
+                    key={`${item.id}-${item.viewerCtaHref}`}
                     data-card
                     className="
-                      snap-start
-                      shrink-0
-                      basis-[78%]
-                      sm:basis-[55%]
-                      md:basis-[30%]
-                      lg:basis-[22%]
+                      snap-start shrink-0
+                      basis-[78%] sm:basis-[55%] md:basis-[30%] lg:basis-[22%]
                     "
                   >
                     <button
@@ -463,14 +458,7 @@ export function FeaturedCollectionsSection() {
                           {item.title}
                         </h3>
 
-                        <span
-                          className="
-                            inline-flex w-fit items-center
-                            border border-neutral-900 bg-neutral-900 px-4 py-2
-                            text-[11px] font-medium uppercase tracking-[0.22em]
-                            text-white transition-colors duration-200 hover:bg-black
-                          "
-                        >
+                        <span className="inline-flex w-fit items-center border border-neutral-900 bg-neutral-900 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors duration-200 hover:bg-black">
                           {item.ctaLabel}
                         </span>
                       </div>
@@ -479,7 +467,6 @@ export function FeaturedCollectionsSection() {
                 ))}
               </div>
 
-              {/* Dots + arrows */}
               <div className="mt-10 flex items-center justify-end gap-5">
                 <div className="flex items-center gap-2">
                   {Array.from({ length: pageCount }).map((_, idx) => {
