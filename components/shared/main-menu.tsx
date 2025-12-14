@@ -1,6 +1,8 @@
+// components/shared/main-menu.tsx
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   Sheet,
   SheetContent,
@@ -10,7 +12,6 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
-import Image from "next/image";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 type MenuColor = "white" | "dark";
@@ -29,23 +30,25 @@ const navItems = [
 ];
 
 export function MainMenu({ color = "dark" }: MainMenuProps) {
-  const iconColor =
-    color === "white" ? "text-white" : "text-neutral-600";
+  const iconColor = color === "white" ? "text-white" : "text-neutral-600";
 
   return (
     <Sheet>
-      <SheetTrigger asChild className="cursor-pointer">
-        <HiOutlineMenuAlt2
-          className={`h-7 w-7 transition-colors duration-200 ${iconColor}`}
-        />
+      {/* ✅ IMPORTANT: Trigger must be a button, NOT the svg icon */}
+      <SheetTrigger asChild>
+        <button
+          type="button"
+          aria-label="Open menu"
+          className="inline-flex items-center justify-center cursor-pointer"
+        >
+          <HiOutlineMenuAlt2
+            className={`h-7 w-7 transition-colors duration-200 ${iconColor}`}
+          />
+        </button>
       </SheetTrigger>
 
-      <SheetContent
-        side="left"
-        className="w-[85vw] max-w-sm border-none p-0 bg-white"
-      >
+      <SheetContent side="left" className="w-[85vw] max-w-sm border-none p-0 bg-white">
         <div className="flex h-full flex-col bg-white">
-          {/* Accessible title + visual top bar */}
           <SheetHeader className="border-b border-neutral-200 px-6 py-4 flex flex-row items-center justify-between space-y-0">
             <div className="flex items-center gap-3">
               <div className="relative h-10 w-10">
@@ -63,14 +66,12 @@ export function MainMenu({ color = "dark" }: MainMenuProps) {
               </span>
             </div>
 
-            {/* Screen-reader title/description (visually hidden) */}
             <SheetTitle className="sr-only">Main navigation</SheetTitle>
             <SheetDescription className="sr-only">
               Primary site navigation links for Sam’Alia.
             </SheetDescription>
           </SheetHeader>
 
-          {/* Nav list */}
           <nav className="flex-1 px-6 py-6">
             <ul className="space-y-1 text-[0.85rem] font-medium tracking-[0.26em] text-neutral-900">
               {navItems.map((item) => (
@@ -81,9 +82,7 @@ export function MainMenu({ color = "dark" }: MainMenuProps) {
                       className="flex items-center justify-between py-3 uppercase hover:text-neutral-500"
                     >
                       <span>{item.label}</span>
-                      <span className="text-[10px] text-neutral-400">
-                        &gt;
-                      </span>
+                      <span className="text-[10px] text-neutral-400">&gt;</span>
                     </Link>
                   </SheetClose>
                 </li>

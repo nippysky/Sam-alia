@@ -1,3 +1,4 @@
+// components/shared/site-header.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -18,19 +19,21 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
   const [hasScrolled, setHasScrolled] = useState(false);
 
   useEffect(() => {
+    if (!isTransparentVariant) return;
+
     const handleScroll = () => {
-      // once user moves even a bit, treat it as scrolled
       setHasScrolled(window.scrollY > 8);
     };
 
-    handleScroll(); // run on mount so refresh-in-middle works
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
-  // If transparent variant AND not scrolled → transparent
-  // Else → solid white header
-  const showSolidHeader = !isTransparentVariant || hasScrolled;
+    // 🔑 No initial handleScroll() call here → start transparent
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isTransparentVariant]);
+
+  // For solid variant → always solid
+  // For transparent variant → solid only after scroll
+  const showSolidHeader = isTransparentVariant ? hasScrolled : true;
 
   const headerClasses = clsx(
     "sticky top-0 w-full backdrop-blur-sm transition-colors duration-300",
@@ -60,7 +63,7 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
               <div className="relative h-10 w-40 sm:h-12 sm:w-48">
                 <Image
                   src="/Samalia_Wordmark.svg"
-                  // If you later add a white wordmark, you can do:
+                  // if you later add a white wordmark:
                   // src={showSolidHeader ? "/Samalia_Wordmark.svg" : "/Samalia_Wordmark_White.svg"}
                   alt="Sam’Alia"
                   fill

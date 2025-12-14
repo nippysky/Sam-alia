@@ -72,14 +72,19 @@ export function DigitalLookbookSection() {
 
         {/* Collage image grid */}
         <motion.div
-          className="w-full h-[260px] sm:h-[300px] md:h-1/2 grid grid-cols-2"
+          className="
+            w-full
+            h-[260px] sm:h-[300px] md:h-1/2
+            grid grid-cols-2
+            grid-rows-1 md:grid-rows-2
+          "
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          {/* Top-left dummy tile */}
-          <div className="w-full h-1/2 bg-[#f5f4f2]" />
+          {/* Top-left dummy tile (desktop only) */}
+          <div className="hidden md:block w-full h-full bg-[#f5f4f2]" />
 
           {/* Right column – FLOAT image */}
           <div className="w-full h-full relative overflow-hidden">
@@ -101,8 +106,8 @@ export function DigitalLookbookSection() {
             />
           </div>
 
-          {/* Bottom-right dummy tile */}
-          <div className="w-full h-1/2 bg-[#f5f4f2]" />
+          {/* Bottom-right dummy tile (desktop only) */}
+          <div className="hidden md:block w-full h-full bg-[#f5f4f2]" />
         </motion.div>
       </div>
     </section>
