@@ -1,4 +1,3 @@
-// components/shared/site-header.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -21,40 +20,28 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
   useEffect(() => {
     if (!isTransparentVariant) return;
 
-    const handleScroll = () => {
-      setHasScrolled(window.scrollY > 8);
-    };
-
+    const handleScroll = () => setHasScrolled(window.scrollY > 8);
     window.addEventListener("scroll", handleScroll, { passive: true });
 
-    // 🔑 No initial handleScroll() call here → start transparent
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isTransparentVariant]);
 
-  // For solid variant → always solid
-  // For transparent variant → solid only after scroll
   const showSolidHeader = isTransparentVariant ? hasScrolled : true;
 
   const headerClasses = clsx(
-    "sticky top-0 w-full backdrop-blur-sm transition-colors duration-300",
+    // ✅ z-50 (or higher) + sticky top-0
+    "sticky top-0 z-50 w-full backdrop-blur-sm transition-colors duration-300",
     showSolidHeader
       ? "border-b border-neutral-200 bg-white"
       : "border-b border-transparent bg-transparent"
   );
 
-  const cartColorClass = showSolidHeader
-    ? "text-neutral-600"
-    : "text-white";
-
+  const cartColorClass = showSolidHeader ? "text-neutral-600" : "text-white";
   const menuColor: "dark" | "white" = showSolidHeader ? "dark" : "white";
 
   return (
-    <header
-      style={{ zIndex: 30 }}
-      className={headerClasses}
-    >
+    <header className={headerClasses}>
       <div className="flex h-16 items-center justify-between px-5 sm:h-20 sm:px-10 lg:px-20">
-        {/* Left: mobile menu + logo */}
         <div className="flex items-center gap-2">
           <MainMenu color={menuColor} />
 
@@ -63,8 +50,6 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
               <div className="relative h-10 w-40 sm:h-12 sm:w-48">
                 <Image
                   src="/Samalia_Wordmark.svg"
-                  // if you later add a white wordmark:
-                  // src={showSolidHeader ? "/Samalia_Wordmark.svg" : "/Samalia_Wordmark_White.svg"}
                   alt="Sam’Alia"
                   fill
                   className="object-contain"
@@ -75,7 +60,6 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
           </Link>
         </div>
 
-        {/* Right: cart */}
         <Link href={"/cart"} aria-label="Shopping cart">
           <HiOutlineShoppingBag
             className={clsx(
