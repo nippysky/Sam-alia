@@ -1,9 +1,25 @@
 // app/inquiry/[slug]/page.tsx
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getCommissionLook } from "@/lib/commission-looks";
 import { SiteHeader } from "@/components/shared/site-header";
 import { LookInquiryClient } from "@/components/inquiry/look-inquiry-client";
+
+/**
+ * Temporary frontend-only mode:
+ * - Accept ANY slug and render the Inquiry UI.
+ * - No backend integration yet, so we generate a placeholder "look".
+ */
+
+function titleFromSlug(slug: string) {
+  const clean = decodeURIComponent(slug || "")
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!clean) return "Selected Look";
+
+  // Title Case-ish (simple + clean)
+  return clean.replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 export default async function InquiryPage({
   params,
@@ -11,9 +27,15 @@ export default async function InquiryPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const look = getCommissionLook(slug);
 
-  if (!look) notFound();
+  const look = {
+    slug,
+    title: titleFromSlug(slug),
+    // ✅ Use a safe default image for demo. Change anytime.
+    image: "/images/F1.png",
+    // optional (not required by your UI)
+    gallery: ["/images/F1.png", "/images/F2.png", "/images/F3.png"],
+  };
 
   return (
     <div className="w-full bg-white text-neutral-900">

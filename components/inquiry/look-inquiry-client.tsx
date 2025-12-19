@@ -37,9 +37,14 @@ const schema = z.object({
 
   country: z.string().min(2, "Please select a country"),
   email: z.string().email("Enter a valid email address"),
-  phone: z.string().min(7, "Phone number is required").max(22, "Phone number is too long"),
+  phone: z
+    .string()
+    .min(7, "Phone number is required")
+    .max(22, "Phone number is too long"),
 
-  occasion: z.string().min(3, "Occasion is required (e.g. Wedding, Event, Photoshoot)"),
+  occasion: z
+    .string()
+    .min(3, "Occasion is required (e.g. Wedding, Event, Photoshoot)"),
 
   timeline: z.string().min(1, "Please pick a date"),
   notes: z.string().min(12, "Tell us a bit more (min 12 characters)"),
@@ -56,7 +61,11 @@ function formatYMD(d: Date) {
   return `${y}-${m}-${day}`;
 }
 function formatPretty(d: Date) {
-  return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
+  return d.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+  });
 }
 function startOfMonth(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), 1);
@@ -68,7 +77,11 @@ function addMonths(d: Date, n: number) {
   return new Date(d.getFullYear(), d.getMonth() + n, 1);
 }
 function isSameDay(a: Date, b: Date) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
 }
 function isPastDay(d: Date) {
   const t = new Date();
@@ -113,6 +126,27 @@ function getAllCountryOptions(): CountryOption[] {
   return out;
 }
 
+/** ---------- Brand primitives: sharp, square, clean ---------- */
+const INPUT_BASE =
+  "w-full min-w-0 border bg-white px-4 py-3 text-[13px] text-neutral-900 outline-none transition " +
+  "focus:border-neutral-400 focus:ring-2 focus:ring-black/10";
+const INPUT_OK = "border-neutral-200 hover:border-neutral-300";
+const INPUT_ERR = "border-red-500";
+
+const BUTTON_PRIMARY =
+  "inline-flex items-center justify-center border border-neutral-900 bg-neutral-900 px-6 py-4 " +
+  "text-[11px] font-medium uppercase tracking-[0.22em] text-white transition " +
+  "hover:bg-black disabled:opacity-60 disabled:cursor-not-allowed";
+
+const BUTTON_GHOST =
+  "inline-flex items-center justify-center border border-neutral-900/70 bg-transparent px-5 py-3 " +
+  "text-[11px] font-medium uppercase tracking-[0.22em] text-neutral-900 transition " +
+  "hover:bg-neutral-900 hover:text-white";
+
+const PANEL =
+  "border border-neutral-200 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.10)]";
+
+/** ---------- Date Picker (square UI) ---------- */
 function DatePicker({
   value,
   onChange,
@@ -131,7 +165,9 @@ function DatePicker({
     return new Date(y, m - 1, d);
   }, [value]);
 
-  const [viewMonth, setViewMonth] = useState<Date>(() => startOfMonth(selected ?? new Date()));
+  const [viewMonth, setViewMonth] = useState<Date>(() =>
+    startOfMonth(selected ?? new Date())
+  );
 
   const grid = useMemo(() => {
     const first = startOfMonth(viewMonth);
@@ -139,14 +175,16 @@ function DatePicker({
     const total = daysInMonth(viewMonth);
 
     const cells: Array<{ date: Date | null; key: string }> = [];
-    for (let i = 0; i < firstWeekday; i++) cells.push({ date: null, key: `b-${i}` });
+    for (let i = 0; i < firstWeekday; i++)
+      cells.push({ date: null, key: `b-${i}` });
 
     for (let day = 1; day <= total; day++) {
       const date = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), day);
       cells.push({ date, key: formatYMD(date) });
     }
 
-    while (cells.length % 7 !== 0) cells.push({ date: null, key: `t-${cells.length}` });
+    while (cells.length % 7 !== 0)
+      cells.push({ date: null, key: `t-${cells.length}` });
     return cells;
   }, [viewMonth]);
 
@@ -156,9 +194,8 @@ function DatePicker({
         type="button"
         onClick={() => setOpen((p) => !p)}
         className={[
-          "w-full min-w-0 rounded-2xl border px-4 py-3 text-left text-[13px] transition",
-          "bg-white",
-          error ? "border-red-500" : "border-neutral-200 hover:border-neutral-300",
+          "w-full min-w-0 border px-4 py-3 text-left text-[13px] transition bg-white",
+          error ? INPUT_ERR : INPUT_OK,
           "focus:outline-none focus:ring-2 focus:ring-black/10",
         ].join(" ")}
         aria-haspopup="dialog"
@@ -189,7 +226,7 @@ function DatePicker({
               className="
                 absolute left-0 z-50 mt-2
                 w-[min(360px,calc(100vw-2.5rem))] sm:w-full
-                rounded-3xl border border-neutral-200 bg-white p-4
+                border border-neutral-200 bg-white p-4
                 shadow-[0_24px_90px_rgba(0,0,0,0.14)]
               "
               initial={{ opacity: 0, y: 10, scale: 0.99 }}
@@ -201,20 +238,23 @@ function DatePicker({
                 <button
                   type="button"
                   onClick={() => setViewMonth((m) => addMonths(m, -1))}
-                  className="rounded-xl border border-neutral-200 px-3 py-2 text-xs hover:bg-neutral-50"
+                  className="border border-neutral-200 px-3 py-2 text-xs hover:bg-neutral-50"
                   aria-label="Previous month"
                 >
                   ←
                 </button>
 
                 <div className="text-[12px] font-medium tracking-wide text-neutral-900">
-                  {viewMonth.toLocaleDateString(undefined, { month: "long", year: "numeric" })}
+                  {viewMonth.toLocaleDateString(undefined, {
+                    month: "long",
+                    year: "numeric",
+                  })}
                 </div>
 
                 <button
                   type="button"
                   onClick={() => setViewMonth((m) => addMonths(m, 1))}
-                  className="rounded-xl border border-neutral-200 px-3 py-2 text-xs hover:bg-neutral-50"
+                  className="border border-neutral-200 px-3 py-2 text-xs hover:bg-neutral-50"
                   aria-label="Next month"
                 >
                   →
@@ -246,8 +286,10 @@ function DatePicker({
                         setOpen(false);
                       }}
                       className={[
-                        "h-10 rounded-2xl text-[12px] transition",
-                        disabled ? "cursor-not-allowed text-neutral-300" : "hover:bg-neutral-100 text-neutral-900",
+                        "h-10 border border-transparent text-[12px] transition",
+                        disabled
+                          ? "cursor-not-allowed text-neutral-300"
+                          : "hover:bg-neutral-100 text-neutral-900",
                         isSel ? "bg-neutral-900 text-white hover:bg-neutral-900" : "",
                       ].join(" ")}
                       aria-label={`Pick ${date.toDateString()}`}
@@ -289,6 +331,7 @@ function DatePicker({
   );
 }
 
+/** ---------- Country combobox (square UI) ---------- */
 function CountryCombobox({
   value,
   onChange,
@@ -323,9 +366,8 @@ function CountryCombobox({
         type="button"
         onClick={() => setOpen((p) => !p)}
         className={[
-          "w-full min-w-0 rounded-2xl border px-4 py-3 text-left text-[13px] transition",
-          "bg-white",
-          error ? "border-red-500" : "border-neutral-200 hover:border-neutral-300",
+          "w-full min-w-0 border px-4 py-3 text-left text-[13px] transition bg-white",
+          error ? INPUT_ERR : INPUT_OK,
           "focus:outline-none focus:ring-2 focus:ring-black/10",
         ].join(" ")}
         aria-haspopup="listbox"
@@ -357,7 +399,7 @@ function CountryCombobox({
               className="
                 absolute left-0 z-50 mt-2
                 w-[min(460px,calc(100vw-2.5rem))] sm:w-full
-                overflow-hidden rounded-3xl border border-neutral-200 bg-white
+                overflow-hidden border border-neutral-200 bg-white
                 shadow-[0_24px_90px_rgba(0,0,0,0.14)]
               "
               initial={{ opacity: 0, y: 10, scale: 0.99 }}
@@ -372,16 +414,22 @@ function CountryCombobox({
                   onChange={(e) => setQ(e.target.value)}
                   placeholder="Search country…"
                   className="
-                    w-full rounded-2xl border border-neutral-200 bg-neutral-50
+                    w-full border border-neutral-200 bg-neutral-50
                     px-3 py-2 text-[13px] text-neutral-900
                     outline-none focus:border-neutral-300
                   "
                 />
               </div>
 
-              <div id={`${id}-list`} role="listbox" className="max-h-80 overflow-auto p-2">
+              <div
+                id={`${id}-list`}
+                role="listbox"
+                className="max-h-80 overflow-auto p-2"
+              >
                 {filtered.length === 0 ? (
-                  <div className="px-3 py-3 text-sm text-neutral-500">No results.</div>
+                  <div className="px-3 py-3 text-sm text-neutral-500">
+                    No results.
+                  </div>
                 ) : (
                   filtered.map((c) => {
                     const active = c.name === value;
@@ -397,8 +445,10 @@ function CountryCombobox({
                           setOpen(false);
                         }}
                         className={[
-                          "w-full rounded-2xl px-3 py-2 text-left text-[13px] transition",
-                          active ? "bg-neutral-900 text-white" : "hover:bg-neutral-100 text-neutral-900",
+                          "w-full px-3 py-2 text-left text-[13px] transition",
+                          active
+                            ? "bg-neutral-900 text-white"
+                            : "hover:bg-neutral-100 text-neutral-900",
                         ].join(" ")}
                       >
                         {c.name}
@@ -430,7 +480,7 @@ function SuccessFX({ seed }: { seed: number }) {
   }, [seed]);
 
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <motion.div
         className="absolute -inset-x-24 top-0 h-24 rotate-12 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.75),transparent)] opacity-70"
         initial={{ x: -220 }}
@@ -453,7 +503,7 @@ function SuccessFX({ seed }: { seed: number }) {
   );
 }
 
-/** ✅ Tilt + Image Parallax (real depth) */
+/** ✅ Tilt + Image Parallax (kept, but without “casting overlays”) */
 function useTiltParallax(enabled: boolean) {
   const ref = useRef<HTMLDivElement | null>(null);
   const raf = useRef<number | null>(null);
@@ -476,18 +526,17 @@ function useTiltParallax(enabled: boolean) {
     if (raf.current) cancelAnimationFrame(raf.current);
     raf.current = requestAnimationFrame(() => {
       const r = el.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width;  // 0..1
+      const px = (e.clientX - r.left) / r.width; // 0..1
       const py = (e.clientY - r.top) / r.height; // 0..1
 
-      const dx = px - 0.5; // -0.5..0.5
+      const dx = px - 0.5;
       const dy = py - 0.5;
 
-      const ry = dx * 7;
-      const rx = -dy * 6;
+      const ry = dx * 6;
+      const rx = -dy * 5;
 
-      // ✅ tiny parallax movement (image shift)
-      const ix = dx * 14; // px
-      const iy = dy * 12;
+      const ix = dx * 12;
+      const iy = dy * 10;
 
       setState({ rx, ry, s: 1.01, ix, iy });
       raf.current = null;
@@ -504,7 +553,9 @@ function useTiltParallax(enabled: boolean) {
 }
 
 export function LookInquiryClient({ look }: { look: Look }) {
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
 
   const {
     register,
@@ -540,7 +591,9 @@ export function LookInquiryClient({ look }: { look: Look }) {
 
   const canHover = useMemo(() => {
     if (typeof window === "undefined") return false;
-    return window.matchMedia?.("(hover: hover) and (pointer: fine)")?.matches ?? false;
+    return (
+      window.matchMedia?.("(hover: hover) and (pointer: fine)")?.matches ?? false
+    );
   }, []);
 
   const tilt = useTiltParallax(canHover);
@@ -567,33 +620,47 @@ export function LookInquiryClient({ look }: { look: Look }) {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="w-full overflow-x-hidden bg-white text-neutral-900"
     >
-      {/* ✅ This wrapper helps “center” the two cards on large screens under the sticky header */}
       <div className="mx-auto w-full max-w-7xl px-5 pb-16 pt-10 sm:px-10">
-        <div className="grid w-full grid-cols-1 gap-7 lg:min-h-[calc(100vh-5rem)] lg:grid-cols-[0.95fr_1.25fr] lg:items-center lg:gap-10">
-          {/* Image card */}
+        <div className="grid w-full grid-cols-1 gap-7 lg:min-h-[calc(100vh-5rem)] lg:grid-cols-[0.95fr_1.25fr] lg:items-start lg:gap-10">
+          {/* Image card (square, clean, no cast) */}
           <motion.section
-            className="
-              relative overflow-hidden rounded-[28px]
-              border border-neutral-200 bg-white
-              shadow-[0_24px_80px_rgba(0,0,0,0.10)]
-            "
+            className={[
+              "relative overflow-hidden",
+              PANEL,
+              "lg:sticky lg:top-24",
+            ].join(" ")}
             style={{ transformStyle: "preserve-3d" }}
             onMouseMove={tilt.onMove}
             onMouseLeave={tilt.reset}
+            aria-label="Selected look preview"
           >
             <motion.div
               ref={tilt.ref}
               className="relative"
-              animate={{ rotateX: tilt.state.rx, rotateY: tilt.state.ry, scale: tilt.state.s }}
-              transition={{ type: "spring", stiffness: 140, damping: 18, mass: 0.7 }}
+              animate={{
+                rotateX: tilt.state.rx,
+                rotateY: tilt.state.ry,
+                scale: tilt.state.s,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 140,
+                damping: 18,
+                mass: 0.7,
+              }}
               style={{ transformStyle: "preserve-3d" }}
             >
-              <div className="relative aspect-4/5 w-full overflow-hidden">
-                {/* ✅ Parallax layer */}
+              <div className="relative aspect-4/5 w-full overflow-hidden bg-neutral-100">
+                {/* Parallax layer */}
                 <motion.div
                   className="absolute inset-0"
                   animate={{ x: tilt.state.ix, y: tilt.state.iy }}
-                  transition={{ type: "spring", stiffness: 120, damping: 18, mass: 0.6 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 120,
+                    damping: 18,
+                    mass: 0.6,
+                  }}
                 >
                   <Image
                     src={look.image}
@@ -605,36 +672,17 @@ export function LookInquiryClient({ look }: { look: Look }) {
                     className="object-cover object-center"
                   />
                 </motion.div>
-
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.45),transparent_62%)]" />
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.05),rgba(0,0,0,0.08))]" />
               </div>
-
-              <div className="pointer-events-none absolute inset-0 ring-1 ring-black/5" />
-
-              <motion.div
-                className="pointer-events-none absolute -inset-20 opacity-0"
-                animate={{ opacity: canHover ? 1 : 0 }}
-                transition={{ duration: 0.2 }}
-                style={{
-                  background:
-                    "radial-gradient(circle at 30% 20%, rgba(255,255,255,0.65), transparent 55%)",
-                  transform: "translateZ(35px)",
-                }}
-              />
             </motion.div>
           </motion.section>
 
-          {/* Form card */}
+          {/* Form card (square UI + tighter, premium spacing) */}
           <motion.section
-            className="
-              relative overflow-hidden rounded-[28px] bg-white
-              border border-neutral-200
-              shadow-[0_24px_80px_rgba(0,0,0,0.10)]
-            "
+            className={["relative overflow-hidden", PANEL].join(" ")}
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.45, ease: "easeOut" }}
+            aria-label="Inquiry form"
           >
             <div className="px-6 py-10 sm:px-10 sm:py-12">
               <p className="text-[11px] font-medium uppercase tracking-[0.26em] text-neutral-600">
@@ -645,8 +693,9 @@ export function LookInquiryClient({ look }: { look: Look }) {
                 {look.title}
               </h1>
 
-              <p className="mt-4 max-w-[60ch] text-sm leading-relaxed text-neutral-600">
-                Share your event date and preferences. We’ll contact you to confirm details and next steps.
+              <p className="mt-4 max-w-[62ch] text-sm leading-relaxed text-neutral-600">
+                Share your details and event timeline. We’ll reach out with next
+                steps, availability, and recommendations.
               </p>
 
               <form onSubmit={handleSubmit(onSubmit)} className="mt-10 space-y-7">
@@ -675,7 +724,9 @@ export function LookInquiryClient({ look }: { look: Look }) {
                     <Label label="Country" required />
                     <CountryCombobox
                       value={country}
-                      onChange={(v) => setValue("country", v, { shouldValidate: true })}
+                      onChange={(v) =>
+                        setValue("country", v, { shouldValidate: true })
+                      }
                       error={errors.country?.message}
                     />
                   </div>
@@ -702,7 +753,9 @@ export function LookInquiryClient({ look }: { look: Look }) {
                     <Label label="Timeline" required />
                     <DatePicker
                       value={timeline}
-                      onChange={(ymd) => setValue("timeline", ymd, { shouldValidate: true })}
+                      onChange={(ymd) =>
+                        setValue("timeline", ymd, { shouldValidate: true })
+                      }
                       error={errors.timeline?.message}
                     />
                   </div>
@@ -722,13 +775,10 @@ export function LookInquiryClient({ look }: { look: Look }) {
                     <select
                       {...register("preferredContact")}
                       defaultValue="email"
-                      className="
-                        w-full rounded-2xl border border-neutral-200 bg-white
-                        px-4 py-3 text-[13px] text-neutral-900
-                        outline-none transition
-                        focus:border-neutral-300 focus:ring-2 focus:ring-black/10
-                        focus:-translate-y-px
-                      "
+                      className={[
+                        INPUT_BASE,
+                        errors.preferredContact ? INPUT_ERR : INPUT_OK,
+                      ].join(" ")}
                     >
                       <option value="email">Email</option>
                       <option value="whatsapp">WhatsApp</option>
@@ -754,11 +804,7 @@ export function LookInquiryClient({ look }: { look: Look }) {
                   <button
                     type="submit"
                     disabled={status === "submitting"}
-                    className="
-                      w-full rounded-2xl bg-neutral-900 px-6 py-4
-                      text-[11px] font-medium uppercase tracking-[0.22em] text-white
-                      transition hover:bg-black disabled:opacity-60
-                    "
+                    className={["w-full", BUTTON_PRIMARY].join(" ")}
                   >
                     {status === "submitting" ? "Submitting…" : "Submit inquiry"}
                   </button>
@@ -769,10 +815,13 @@ export function LookInquiryClient({ look }: { look: Look }) {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 8 }}
-                        className="relative mt-5 overflow-hidden rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"
+                        className="relative mt-5 overflow-hidden border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"
+                        aria-live="polite"
                       >
                         <SuccessFX seed={confettiSeed} />
-                        <div className="relative">Submitted successfully. We’ll reach out shortly.</div>
+                        <div className="relative">
+                          Submitted successfully. We’ll reach out shortly.
+                        </div>
                       </motion.div>
                     )}
 
@@ -781,7 +830,8 @@ export function LookInquiryClient({ look }: { look: Look }) {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 8 }}
-                        className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900"
+                        className="mt-5 border border-red-200 bg-red-50 p-4 text-sm text-red-900"
+                        aria-live="polite"
                       >
                         Something went wrong. Please try again.
                       </motion.div>
@@ -789,7 +839,8 @@ export function LookInquiryClient({ look }: { look: Look }) {
                   </AnimatePresence>
 
                   <div className="mt-6 text-xs text-neutral-500">
-                    By submitting, you agree we can contact you regarding this request.
+                    By submitting, you agree we can contact you regarding this
+                    request.
                   </div>
                 </div>
               </form>
@@ -829,10 +880,9 @@ const Field = forwardRef<HTMLInputElement, FieldProps>(function Field(
         ref={ref}
         {...props}
         className={[
-          "w-full min-w-0 rounded-2xl border px-4 py-3 text-[13px] transition",
-          "bg-white",
-          error ? "border-red-500" : "border-neutral-200 focus:border-neutral-300",
-          "focus:outline-none focus:ring-2 focus:ring-black/10 focus:-translate-y-px",
+          INPUT_BASE,
+          error ? INPUT_ERR : INPUT_OK,
+          "focus:-translate-y-px",
         ].join(" ")}
       />
       {error && <p className="mt-1 text-[11px] text-red-600">{error}</p>}
@@ -858,10 +908,9 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function TextAre
         {...props}
         rows={5}
         className={[
-          "w-full min-w-0 rounded-2xl border px-4 py-3 text-[13px] transition",
-          "bg-white",
-          error ? "border-red-500" : "border-neutral-200 focus:border-neutral-300",
-          "focus:outline-none focus:ring-2 focus:ring-black/10 focus:-translate-y-px",
+          INPUT_BASE,
+          error ? INPUT_ERR : INPUT_OK,
+          "focus:-translate-y-px",
         ].join(" ")}
       />
       {error && <p className="mt-1 text-[11px] text-red-600">{error}</p>}
