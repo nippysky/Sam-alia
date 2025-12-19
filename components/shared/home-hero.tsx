@@ -46,7 +46,7 @@ export function HomeHero() {
                 >
                   <Link href="/collections">
                     <span className="inline-flex items-center gap-3">
-                      <span>Shop Collection</span>
+                      <span>View Collection</span>
                       <ChevronRight className="h-3.5 w-3.5" />
                     </span>
                   </Link>
