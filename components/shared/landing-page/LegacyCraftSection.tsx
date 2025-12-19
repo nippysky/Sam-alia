@@ -58,7 +58,7 @@ export function LegacyCraftSection() {
               {/* CENTER TEXT + BUTTON */}
               <div className="order-2 max-w-2xl text-center md:order-2 md:text-center">
                 <h2 className="font-heading text-3xl tracking-[0.18em] text-white sm:text-4xl md:text-[42px] lg:text-[48px]">
-                  LEGACY &amp; CRAFT
+                 CRAFT &amp; LEGACY
                 </h2>
 
                 <p className="mt-6 text-sm leading-relaxed text-white/85 sm:text-[15px] md:text-[16px] md:leading-relaxed">
@@ -70,7 +70,7 @@ export function LegacyCraftSection() {
 
                 <div className="mt-9 flex justify-center">
                   <Link
-                    href="/legacy"
+                    href="/craft-legacy"
                     className="inline-flex items-center border border-white bg-transparent px-7 py-3 text-[11px] font-medium uppercase tracking-[0.24em] text-white transition-colors duration-200 hover:bg-white hover:text-neutral-900"
                   >
                     Take a tour

@@ -35,87 +35,82 @@ export function SamaliaJournalSection() {
                 className="inline-flex items-center border border-neutral-900 bg-transparent px-7 py-3 text-[11px] font-medium uppercase tracking-[0.22em] text-neutral-900 transition-colors duration-200 hover:bg-neutral-900 hover:text-white"
               >
                 Read more
-                <span className="ml-3 inline-block text-sm leading-none">
-                  →
-                </span>
+                <span className="ml-3 inline-block text-sm leading-none">→</span>
               </Link>
             </div>
           </div>
 
-          {/* RIGHT: Collage */}
+          {/* RIGHT: Collage (NOT LINKS) */}
           <div className="grid gap-4 md:gap-5 lg:gap-6">
             {/* Top row: 2 cards */}
             <div className="grid grid-cols-2 gap-4 md:gap-5 lg:gap-6">
-              {/* HOUSE NOTES */}
-              <Link
-                href="/journal/house-notes"
-                className="group relative block overflow-hidden bg-neutral-200"
-              >
-                <div className="relative w-full pt-[56%]">
-                  <Image
-                    src={JOURNAL_HOUSE_NOTES}
-                    alt="House Notes – conversations and reflections from Sam’Alia"
-                    fill
-                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"
-                  />
-                  {/* subtle gradient for legibility */}
-                  <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
-                </div>
+              <JournalCard
+                image={JOURNAL_HOUSE_NOTES}
+                alt="House Notes – conversations and reflections from Sam’Alia"
+                label="House Notes"
+                ratioClass="pt-[56%]"
+              />
 
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 px-4 pb-4">
-                  <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-white">
-                    House Notes
-                  </p>
-                </div>
-              </Link>
-
-              {/* STORIES */}
-              <Link
-                href="/journal/stories"
-                className="group relative block overflow-hidden bg-neutral-200"
-              >
-                <div className="relative w-full pt-[56%]">
-                  <Image
-                    src={JOURNAL_STORIES}
-                    alt="Stories – narratives behind the pieces"
-                    fill
-                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/35 via-transparent to-transparent" />
-                </div>
-
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 px-4 pb-4">
-                  <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-white">
-                    Stories
-                  </p>
-                </div>
-              </Link>
+              <JournalCard
+                image={JOURNAL_STORIES}
+                alt="Stories – narratives behind the pieces"
+                label="Stories"
+                ratioClass="pt-[56%]"
+              />
             </div>
 
             {/* Bottom: wide VISUALS card – reduced height */}
-            <Link
-              href="/journal/visuals"
-              className="group relative block overflow-hidden bg-neutral-200"
-            >
-              <div className="relative w-full pt-[46%] sm:pt-[50%] lg:pt-[45%]">
-                <Image
-                  src={JOURNAL_VISUALS}
-                  alt="Visuals – imagery from the Sam’Alia world"
-                  fill
-                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/35 via-transparent to-transparent" />
-              </div>
-
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 px-4 pb-4">
-                <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-white">
-                  Visuals
-                </p>
-              </div>
-            </Link>
+            <JournalCard
+              image={JOURNAL_VISUALS}
+              alt="Visuals – imagery from the Sam’Alia world"
+              label="Visuals"
+              ratioClass="pt-[46%] sm:pt-[50%] lg:pt-[45%]"
+            />
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function JournalCard({
+  image,
+  alt,
+  label,
+  ratioClass,
+}: {
+  image: string;
+  alt: string;
+  label: string;
+  ratioClass: string;
+}) {
+  return (
+    <div
+      className="
+        group relative block overflow-hidden bg-neutral-200
+        select-none
+      "
+      role="img"
+      aria-label={label}
+    >
+      <div className={["relative w-full", ratioClass].join(" ")}>
+        <Image
+          src={image}
+          alt={alt}
+          fill
+          className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"
+          draggable={false}
+        />
+
+        {/* subtle gradient for legibility */}
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
+      </div>
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 px-4 pb-4">
+        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-white">
+          {label}
+        </p>
+      </div>
+    </div>
   );
 }

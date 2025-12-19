@@ -1,11 +1,14 @@
+// components/shared/site-header.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { MainMenu } from "./main-menu";
-import { HiOutlineShoppingBag } from "react-icons/hi2";
 import clsx from "clsx";
+
+import { MainMenu } from "./main-menu";
+import { CartSheet } from "./cart-sheet";
+
 
 type HeaderVariant = "solid" | "transparent";
 
@@ -19,25 +22,25 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
 
   useEffect(() => {
     if (!isTransparentVariant) return;
-
     const handleScroll = () => setHasScrolled(window.scrollY > 8);
     window.addEventListener("scroll", handleScroll, { passive: true });
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isTransparentVariant]);
 
   const showSolidHeader = isTransparentVariant ? hasScrolled : true;
 
   const headerClasses = clsx(
-    // ✅ z-50 (or higher) + sticky top-0
     "sticky top-0 z-50 w-full backdrop-blur-sm transition-colors duration-300",
     showSolidHeader
       ? "border-b border-neutral-200 bg-white"
       : "border-b border-transparent bg-transparent"
   );
 
-  const cartColorClass = showSolidHeader ? "text-neutral-600" : "text-white";
   const menuColor: "dark" | "white" = showSolidHeader ? "dark" : "white";
+  const cartIconClass = clsx(
+    "h-6 w-6 sm:h-7 sm:w-7 transition-colors duration-200",
+    showSolidHeader ? "text-neutral-600" : "text-white"
+  );
 
   return (
     <header className={headerClasses}>
@@ -60,14 +63,7 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
           </Link>
         </div>
 
-        <Link href={"/cart"} aria-label="Shopping cart">
-          <HiOutlineShoppingBag
-            className={clsx(
-              "h-6 w-6 sm:h-7 sm:w-7 transition-colors duration-200",
-              cartColorClass
-            )}
-          />
-        </Link>
+        <CartSheet iconClassName={cartIconClass} />
       </div>
     </header>
   );
