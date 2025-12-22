@@ -23,7 +23,7 @@ export default async function ReadyToWearProductPage({
     <main className="w-full bg-white text-neutral-900">
       <SiteHeader variant="solid" />
 
-      <div className="mx-auto w-full max-w-[1200px] px-5 pb-14 pt-6 sm:px-10">
+      <div className="mx-auto w-full max-w-300 px-5 pb-14 pt-6 sm:px-10">
         {/* Breadcrumb row like screenshot */}
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-neutral-600">
           <Link href="/shop/ready-to-wear" className="hover:text-neutral-900">

@@ -14,14 +14,14 @@ const collectionCards: CollectionCard[] = [
   {
     id: "bespoke",
     label: "BESPOKE",
-    href: "/collections/bespoke",
+    href: "/shop/bespoke",
     image: "/images/Col_Bespoke.svg",
     alt: "Bespoke collection",
   },
   {
     id: "ready",
     label: "READY TO WEAR",
-    href: "/collections/ready-to-wear",
+    href: "/shop/ready-to-wear",
     image: "/images/Col_RTW.svg",
     alt: "Ready to wear collection",
   },
